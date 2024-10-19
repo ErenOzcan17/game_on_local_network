@@ -1,6 +1,8 @@
 import socket
 import struct
 import threading
+import time
+
 
 class Client:
     def __init__(self, socket, addr, client_id):
@@ -35,9 +37,8 @@ def handle_client(client_obj):
                     turn_flag = True
         except Exception as e:
             print(f"Error handling client: {e}")
+            client_obj.socket.close()
             break
-    client_obj.socket.close()
-    clients.remove(client_obj)
 
 
 def get_local_ip():
@@ -73,6 +74,23 @@ def start_server(host=get_local_ip(), port=5555):
         client_thread = threading.Thread(target=handle_client, args=(client,))
         client_thread.start()
 
+def send_broadcast_message(message, broadcast_ip='255.255.255.255', port=5000):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+    while True:
+        message_bytes = message.encode('utf-8')
+        sock.sendto(message_bytes, (broadcast_ip, port))
+        print(f"Broadcast mesajı gönderildi: {message}")
+        time.sleep(3)  # 3 saniye bekle
+        if len(clients) == 2:
+            break
+
 
 if __name__ == "__main__":
-    start_server()
+    broadcast_msg_thread = threading.Thread(target=send_broadcast_message, args=("Eren12345",))
+    broadcast_msg_thread.start()
+
+    # Server'ı başlat
+    server_thread = threading.Thread(target=start_server)
+    server_thread.start()

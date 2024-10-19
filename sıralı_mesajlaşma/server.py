@@ -1,6 +1,8 @@
 import socket
 import struct
 import threading
+import time
+from xox.server import get_local_ip
 
 
 class Client:
@@ -22,7 +24,6 @@ def handle_client(client_obj):
                 clients[1].socket.sendall(struct.pack('B', 0) + "".encode('utf-8'))
                 data = client_obj.socket.recv(1024)
                 if len(data) > 0:
-                    # Check if we have at least 1 byte to unpack
                     flag = struct.unpack('B', data[:1])[0]  # Unpack needs a tuple, so index into it
                     message = data[1:].decode('utf-8')
                     if message and flag == 1:
@@ -50,14 +51,14 @@ def handle_client(client_obj):
     clients.remove(client_obj)
 
 
-def start_server(host='192.168.1.101', port=5555):
+def start_server(host=get_local_ip(), port=5555):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind((host, port))
     server.listen(2)
 
     print(f"Server {host}:{port} adresinde dinliyor...")
 
-    while True :
+    while True:
         client_socket, client_addr = server.accept()
         print(f"{client_addr} bağlandı.")
         client_id = len(clients)  # İlk bağlanan client id = 0, ikinci id = 1
@@ -66,12 +67,27 @@ def start_server(host='192.168.1.101', port=5555):
         if len(clients) == 2:
             break
 
-def start_handling():
     for client in clients:
         client_thread = threading.Thread(target=handle_client, args=(client,))
         client_thread.start()
 
 
+def send_broadcast_message(message, broadcast_ip='255.255.255.255', port=5000):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+    while True:
+        message_bytes = message.encode('utf-8')
+        sock.sendto(message_bytes, (broadcast_ip, port))
+        print(f"Broadcast mesajı gönderildi: {message}")
+        time.sleep(3)  # 3 saniye bekle
+
+
 if __name__ == "__main__":
-    start_server()
-    start_handling()
+    # Broadcast mesajını ve server'ı ayrı iş parçacıklarında çalıştır
+    broadcast_msg_thread = threading.Thread(target=send_broadcast_message, args=("Eren12345",))
+    broadcast_msg_thread.start()
+
+    # Server'ı başlat
+    server_thread = threading.Thread(target=start_server)
+    server_thread.start()

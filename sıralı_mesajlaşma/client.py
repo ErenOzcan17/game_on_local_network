@@ -43,11 +43,10 @@ def receive_messages(client_socket):
 
         except Exception as e:
             print(f"Error receiving message: {e}")
+            client_socket.close()
             break
 
-
-
-def start_client(host='192.168.1.101', port=5555):
+def start_client(host, port=5555):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((host, port))
 
@@ -55,5 +54,25 @@ def start_client(host='192.168.1.101', port=5555):
     receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
     receive_thread.start()
 
+
+def listen_broadcast(port):
+    # Broadcast mesajlarını dinlemek için bir UDP soketi oluştur
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    # Broadcast mesajlarını almak için soketi bağla
+    sock.bind(("", port))
+
+    print(f"Broadcast mesajlarını dinliyor... (Port: {port})")
+
+    while True:
+        # Gelen mesajları al
+        data, addr = sock.recvfrom(1024)
+        print(f"Broadcast mesajı alındı socket başlatılıyor")
+        if data.decode('utf-8') == "Eren12345":
+            start_client(addr[0])
+            break
+
+
 if __name__ == "__main__":
-    start_client()
+    listen_broadcast(5000)

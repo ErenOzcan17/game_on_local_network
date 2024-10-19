@@ -7,8 +7,6 @@ from tkinter import messagebox
 turn_flag = True  # True if it's this client's turn
 client_id = None
 first_message = False
-host = '10.138.135.133'
-port = 5555
 board = [' ' for _ in range(9)]  # 3x3 Tic-Tac-Toe board
 
 def receive_messages(client_socket):
@@ -28,6 +26,7 @@ def receive_messages(client_socket):
                     print("Your turn!")
         except Exception as e:
             print(f"Error receiving message: {e}")
+            client_socket.close()
             break
 
 def send_move(move):
@@ -69,17 +68,36 @@ def create_buttons():
         button.grid(row=i//3, column=i%3)
         buttons.append(button)
 
-def start_client():
+def start_client(host, port=5555):
     global client_socket
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect((host, port))
     receive_thread = threading.Thread(target=receive_messages, args=(client_socket,))
     receive_thread.start()
 
+
+def listen_broadcast(port):
+    # Broadcast mesajlarını dinlemek için bir UDP soketi oluştur
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    # Broadcast mesajlarını almak için soketi bağla
+    sock.bind(("", port))
+
+    print(f"Broadcast mesajlarını dinliyor... (Port: {port})")
+
+    while True:
+        # Gelen mesajları al
+        data, addr = sock.recvfrom(1024)
+        print(f"Broadcast mesajı alındı socket başlatılıyor")
+        if data.decode('utf-8') == "Eren12345":
+            start_client(addr[0])
+            break
+
 if __name__ == "__main__":
     root = tk.Tk()
     root.title("Tic-Tac-Toe")
     buttons = []
     create_buttons()
-    start_client()
+    listen_broadcast(5000)
     root.mainloop()
