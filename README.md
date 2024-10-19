@@ -4,7 +4,7 @@ Local ağda oynayabileceğim oyunlar yapmak için öncelikle tasarlayacağım ya
 
 ## Sıralı Mesajlaşma
 
-**Server** kodu çalışmaya başladığında, *broadcast* ile 3 saniyede 1 kez paket gönderecek ve clientlardan gelen bağlantı isteklerini dinleyecek fonksiyonları ayrı threadler olarak başlatacak şekilde başlar. Server başladıktan sonra başlatılan clientlar, 5000 portundan gelecek paketleri dinlemeye başlar ve eğer gelen paket **"Eren12345"** ise, gelen paketin adresine 5555 portundan bağlantı isteği atar. Server, halihazırda bağlantı isteklerini dinlediği için TCP socket bağlantısı kurulmuş olur. Server, 2. bağlantı kurulana kadar herhangi bir işleme başlamaz. 
+**Server** kodu çalışmaya başladığında, *broadcast* ile 3 saniyede 1 kez paket gönderecek ve clientlardan gelen bağlantı isteklerini dinleyecek fonksiyonları ayrı threadler olarak başlatılır. Server başladıktan sonra başlatılan clientlar, 5000 portundan gelecek paketleri dinlemeye başlar ve eğer gelen paket **"Eren12345"** ise, gelen paketin adresine 5555 portundan bağlantı isteği atar. Server, halihazırda bağlantı isteklerini dinlediği için TCP socket bağlantısı kurulmuş olur. Server, 2. bağlantı kurulana kadar herhangi bir işleme başlamaz. 
 
 ![Pasted image (3)](https://github.com/user-attachments/assets/2c65deb3-cbe4-4105-9d84-951e07ffca1c)
 
