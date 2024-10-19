@@ -2,8 +2,6 @@ import socket
 import struct
 import threading
 import time
-from xox.server import get_local_ip
-
 
 class Client:
     def __init__(self, socket, addr, client_id):
@@ -49,6 +47,18 @@ def handle_client(client_obj):
             break
     client_obj.socket.close()
     clients.remove(client_obj)
+
+def get_local_ip():
+    # Bağlantı oluşturup IP adresini bul
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8", 80))
+        ip_address = s.getsockname()[0]
+    except Exception as e:
+        ip_address = "IP adresi bulunamadı"
+    finally:
+        s.close()
+    return ip_address
 
 
 def start_server(host=get_local_ip(), port=5555):
