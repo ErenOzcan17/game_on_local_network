@@ -10,7 +10,14 @@ Local ağda oynayabileceğim oyunlar yapmak için öncelikle tasarlayacağım ya
 
 ## Flag Yapısı
 
-Sıranın kimde olduğunu clientlara bildirmek için gönderdiğim paketlerin ilk byte'ını **flag** olarak kullanmayı düşündüm. 2. bağlantı kurulduktan sonra server; önce bağlanan client'a ilk byte'ı 1 olan, diğer client'a ise 0 olan bir paket gönderiyor. Bu ilk gelen paket'e göre clientlar kendi ID'lerini flag 1 ise id=0, flag 0 ise id=1 (ilk bağlanan 0, diğerinin 1) olacak şekilde belirliyorlar. Ardından gönderilen mesajların ilk byte'larına bakılarak sıranın kimde olduğu kontrol edilmeye devam ediyor ve sırası gelen mesaj gönderiyor. Client'ın gönderdiği mesaj önce server'a gidiyor, sonra server 2. client'a birden flagleri ile birlikte mesaj gönderiyor.
+Sıranın kimde olduğunu clientlara bildirmek için gönderdiğim paketlerin ilk byte'ını **flag** olarak kullanmayı düşündüm. 2. bağlantı kurulduktan sonra server; önce bağlanan client'a ilk byte'ı 1 olan, diğer client'a ise 0 olan bir paket gönderiyor. Bu ilk gelen paket'e göre clientlar kendi ID'lerini flag 1 ise id=0, flag 0 ise id=1 (ilk bağlanan 0, diğerinin 1) olacak şekilde belirliyorlar. Ardından gönderilen mesajların ilk byte'larına bakılarak sıranın kimde olduğu kontrol edilmeye devam ediyor ve sırası gelen mesaj gönderiyor. Client'ın gönderdiği mesaj önce server'a gidiyor, sonra server 2 client'a birden flagleri ile birlikte mesaj gönderiyor.
 
 ![Pasted image (2)](https://github.com/user-attachments/assets/4a07bb9c-b14e-4e27-947b-1a967292eb3a)
+
+## XOX Oyunu
+
+Mesajlaşma kısmını tamamladıktan bu yapıyı xox oyununa uygulamaya geçtim.GPT'ye yaptırdığım bir ui ile kullanıcıların yaptığı hamleleri mesaj gönderimi için kullanılan yerlerden göndererek oyunu tamamladım
+
+![image](https://github.com/user-attachments/assets/00bfc0af-5eb5-4a3c-a291-5baa9adaf886)
+
 
