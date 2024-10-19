@@ -81,6 +81,8 @@ def send_broadcast_message(message, broadcast_ip='255.255.255.255', port=5000):
         sock.sendto(message_bytes, (broadcast_ip, port))
         print(f"Broadcast mesajı gönderildi: {message}")
         time.sleep(3)  # 3 saniye bekle
+        if len(clients) == 2:
+            break
 
 
 if __name__ == "__main__":
